@@ -16,5 +16,5 @@ function controlChange(newData) {
   tsneGraph.draw(newData);
   parallelGraph.draw(newData);
   // heatMap.draw(newData);
-  // treeMap.draw(newData);
+  treeMap.draw(newData);
 }

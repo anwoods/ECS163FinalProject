@@ -37,7 +37,9 @@ function ParallelGraph(svg, data) {
       updateSelect
         .attr('d', path)
         .style('fill', 'none')
-        .style('stroke', 'red'); //TODO: change to category color later
+        .style('stroke', d => {
+          return categoryColors[d.main_category](d.category)
+        });
     }
 
     update(entering);

@@ -1,20 +1,46 @@
 function TsneGraph(svg, data) {
   let box = svg.node().getBoundingClientRect();
-  // var margin = {
-  //   top: 50,
-  //   right: 300,
-  //   bottom: 80,
-  //   left: 70
-  // };
   var width = box.width - 40;
   var height = box.height - 40;
+  let lasso;
 
   this.svg = svg
-    // .attr("width", width + margin.left + margin.right)
-    // .attr("height", height + margin.top + margin.bottom)
-    .append("g")
+
+  //// Lasso effect ////
+
+  var startLasso = function() {
+    lasso.items()
+      .attr("r", 5)
+      .classed("not_possible", true)
+      .classed("selected", false)
+  }
+
+  var drawLasso = function() {
+    lasso.possibleItems()
+      .classed("not_possible", false)
+      .classed("possible", true)
+
+    lasso.notPossibleItems()
+      .classed("not_possible", true)
+      .classed("possible", false)
+  }
+  var endLasso = function() {
+    lasso.items()
+      .classed("not_possible", false)
+      .classed("possible", true)
+    //make dots inside lasso bigger
+    lasso.selectedItems()
+      .classed("selected", true)
+      .attr("r", 5)
+    //keep dots outside of lasso original size
+    lasso.notSelectedItems()
+      .attr("r", 3)
+  }
+
+
+  this.svg.append("g")
     .attr("transform", "translate(20,20)");
-  // svg.append("g").attr(transform)
+
   goalScale = d3.scaleLinear()
     .range([0, 1])
     .domain(d3.extent(data, (d) => d.goal))
@@ -32,7 +58,6 @@ function TsneGraph(svg, data) {
       return d.campaignLength
     }))
 
-  // console.log(goalScale.range(), goalScale.domain());
 
   this.draw = (newData) => {
     this.svg.selectAll('circle').remove();
@@ -53,7 +78,7 @@ function TsneGraph(svg, data) {
     var tsne = new tsnejs.tSNE(opt);
     console.log(tsneData);
     tsne.initDataRaw(tsneData);
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       tsne.step();
     }
     console.log(tsne.iter);
@@ -67,7 +92,7 @@ function TsneGraph(svg, data) {
       .domain(d3.extent(Y, d => d[1]));;
 
     console.log(Y);
-    this.svg.selectAll('circle')
+    let circles = this.svg.selectAll('circle')
       .data(newData, (d) => {
         return d ? d.ID : this.id;
       })
@@ -82,7 +107,21 @@ function TsneGraph(svg, data) {
         // console.log(i);
         return y(Y[i][1]);
       })
-      .attr('r', 5)
-      .attr('fill', 'red'); //TODO: add color by category later
+      .attr('r', 3)
+      .attr('fill', d => {
+        return categoryColors[d.main_category](d.category)
+      }); //TODO: add color by category later
+    console.log(circles)
+    lasso = d3.lasso()
+      .closePathSelect(true) // allows for looping around pts
+      // lasso will close when end pt is 70px from origin
+      .closePathDistance(70)
+      .items(this.svg.selectAll("circle"))
+      .targetArea(svg)
+      .on("start", startLasso)
+      .on("draw", drawLasso)
+      .on("end", endLasso);
+
+    this.svg.call(lasso);
   }
 }

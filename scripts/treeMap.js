@@ -1,11 +1,3 @@
-function addToDict(category, subcategory, dict) {
-  if (dict[category] == undefined) {
-    dict[category] = [];
-  } else if (dict[category].indexOf(subcategory) == -1) {
-    dict[category].push(subcategory);
-  }
-}
-
 function TreeMap(svg, data) {
 
   var margins = {
@@ -22,29 +14,24 @@ function TreeMap(svg, data) {
   var color = d3.scaleOrdinal().range(d3.schemeCategory20c);
 
   this.draw = (newData) => {
+    console.log('drawing treeMap');
 
-    data = [];
-    // dict = {};
-
-    newData.forEach(function(d, i) {
-
-      // For our purposes, if the state is cancelled or suspended,
-      // we consider it a failed, non-successful project
-      if (d.state == "canceled" || d.state == "suspended") {
-        d.state = "failed";
-      }
-
-      // Only include valid states
-      if (d.state == "successful" || d.state == "failed") {
-        data.push(d);
-        // addToDict(d.main_category, d.category, dict);
-      }
-
-    });
-
-    console.log(dict);
-
-    newData = data;
+    // filteredData = [];
+    // // dict = {};
+    //
+    // newData.forEach(function(d, i) {
+    //
+    //   // For our purposes, if the state is cancelled or suspended,
+    //   // we consider it a failed, non-successful project
+    //   if (d.state == "canceled" || d.state == "suspended") {
+    //     d.state = "failed";
+    //   }
+    //
+    //
+    // });
+    //
+    //
+    // newData = filteredData;
 
     // Create a hierarchy of data, based on:
     // project's state -> main category -> category -> number of projects
@@ -62,7 +49,9 @@ function TreeMap(svg, data) {
       .padding(1)
       .round(true);
 
-    var root = d3.hierarchy({values: hierarchy}, (d) => d.values);
+    var root = d3.hierarchy({
+      values: hierarchy
+    }, (d) => d.values);
     console.log(root);
     var result = treemap(root);
 
@@ -82,21 +71,20 @@ function TreeMap(svg, data) {
 
 }
 
-d3.csv("./data/ks-projects-201612.csv", function(error, data) {
-  if (error) throw error;
-
-  data.forEach(function(d, i) {
-    d.goal = +d.goal;
-    d.pledged = +d.pledged;
-    d.backers = +d.backers;
-    //d.category = d["category "];
-    d.deadline = new Date(d.deadline)
-    d.launched = new Date(d.deadline)
-    d.campaignLength = (d.deadline.getTime() - d.launched.getTime()) / (1000 * 3600 * 24); //number of milliseconds in a day
-  });
-
-
-  treemap = new TreeMap(d3.select('#tree'), data);
-  treemap.draw(data);
-});
-
+// d3.csv("./data/ks-projects-201612.csv", function(error, data) {
+//   if (error) throw error;
+//
+//   data.forEach(function(d, i) {
+//     d.goal = +d.goal;
+//     d.pledged = +d.pledged;
+//     d.backers = +d.backers;
+//     //d.category = d["category "];
+//     d.deadline = new Date(d.deadline)
+//     d.launched = new Date(d.deadline)
+//     d.campaignLength = (d.deadline.getTime() - d.launched.getTime()) / (1000 * 3600 * 24); //number of milliseconds in a day
+//   });
+//
+//
+//   treemap = new TreeMap(d3.select('#tree'), data);
+//   treemap.draw(data);
+// });
