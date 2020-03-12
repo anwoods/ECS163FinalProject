@@ -10,7 +10,7 @@ function TsneGraph(svg, data) {
 
   var startLasso = function() {
     lasso.items()
-      .attr("r", 5)
+      .attr("r", 3)
       .classed("not_possible", true)
       .classed("selected", false)
   }
@@ -19,22 +19,36 @@ function TsneGraph(svg, data) {
     lasso.possibleItems()
       .classed("not_possible", false)
       .classed("possible", true)
+      .attr("opacity", 1)
 
     lasso.notPossibleItems()
       .classed("not_possible", true)
       .classed("possible", false)
+      .attr("opacity", 0.3)
   }
   var endLasso = function() {
     lasso.items()
       .classed("not_possible", false)
       .classed("possible", true)
-    //make dots inside lasso bigger
-    lasso.selectedItems()
-      .classed("selected", true)
-      .attr("r", 5)
-    //keep dots outside of lasso original size
-    lasso.notSelectedItems()
-      .attr("r", 3)
+
+
+    if (lasso.selectedItems().empty()) { //nothing was selected, restore all
+      lasso.notSelectedItems()
+        .attr('opacity', 1);
+
+      parallelGraph.restoreAll();
+    } else {
+      //make dots inside lasso bigger
+      lasso.selectedItems()
+        .classed("selected", true)
+        .attr("r", 5)
+      //keep dots outside of lasso original size
+      lasso.notSelectedItems()
+        .attr("r", 3)
+
+      parallelGraph.selection(d3.selectAll('.selected').data());
+    }
+
   }
 
 
@@ -72,33 +86,39 @@ function TsneGraph(svg, data) {
       dataAr[3] = campainLengthScale(d.campaignLength)
       tsneData.push(dataAr);
     });
+
     var opt = {}; // epsilon is learning rate (10 = default)
     opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
     opt.dim = 2; // dimensionality of the embedding (2 = default)
     var tsne = new tsnejs.tSNE(opt);
-    console.log(tsneData);
+    // console.log(tsneData);
     tsne.initDataRaw(tsneData);
-    for (let i = 0; i < 10; i++) {
-      tsne.step();
-    }
-    console.log(tsne.iter);
-    let Y = tsne.getSolution(); // x = Y[i][0] y = Y[i][1]
-    console.log('ran steps');
-    let x = d3.scaleLinear()
-      .range([0, width])
-      .domain(d3.extent(Y, d => d[0]));
-    let y = d3.scaleLinear()
-      .range([height, 0])
-      .domain(d3.extent(Y, d => d[1]));;
 
-    console.log(Y);
-    let circles = this.svg.selectAll('circle')
+    let circles = this.svg
+      .selectAll('circle')
       .data(newData, (d) => {
         return d ? d.ID : this.id;
       })
       .enter()
       .append('circle')
       .attr('id', (d) => d.ID)
+      .attr('r', 3)
+      .attr('fill', d => {
+        return categoryColors[d.main_category](d.category)
+      });
+
+    for (let i = 0; i < 10; i++) {
+      tsne.step();
+    }
+
+    Y = tsne.getSolution();
+    x = d3.scaleLinear()
+      .range([0, width])
+      .domain(d3.extent(Y, d => d[0]));
+    y = d3.scaleLinear()
+      .range([height, 0])
+      .domain(d3.extent(Y, d => d[1]));
+    circles.transition()
       .attr('cx', (d, i) => {
         // console.log(i);
         return x(Y[i][0]);
@@ -106,12 +126,9 @@ function TsneGraph(svg, data) {
       .attr('cy', (d, i) => {
         // console.log(i);
         return y(Y[i][1]);
-      })
-      .attr('r', 3)
-      .attr('fill', d => {
-        return categoryColors[d.main_category](d.category)
-      }); //TODO: add color by category later
-    console.log(circles)
+      });
+
+
     lasso = d3.lasso()
       .closePathSelect(true) // allows for looping around pts
       // lasso will close when end pt is 70px from origin

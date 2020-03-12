@@ -64,4 +64,18 @@ function ParallelGraph(svg, data) {
       .style('fill', 'black');
 
   }
+
+  this.selection = (selectedData) => {
+    this.svg.selectAll('path')
+      .attr('display', 'none'); //hide everything
+    selectedData.forEach((d) => {
+      this.svg.select('[id="' + d.ID + '"]') //show selected elements
+        .attr('display', 'block');
+    });
+  }
+
+  this.restoreAll = () => {
+    this.svg.selectAll('path')
+      .attr('display', 'block');
+  }
 }
