@@ -4,16 +4,29 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
-  <style>
-
-  </style>
 </head>
+
+<style>
+    #treemapTooltip {
+      font: 10px sans-serif;
+      position: absolute;
+      border-radius: 10px;
+      padding: 10px;
+      overflow-x: visible;
+      overflow-y: visible;
+      background-color: black;
+      color: white;
+      text-align: center;
+      opacity: 0.8;
+    }
+</style>
 
 <body>
   <svg id="tsne"></svg>
   <svg id="parallel"></svg>
   <svg id="heat"></svg>
-  <svg id="tree"></svg>
+  <svg id="tree" style="width:80%"></svg>
+  <div id="treemapTooltip" style="display:none"></div>
 
 
   <script src='./scripts/d3.v4.min.js'></script>
