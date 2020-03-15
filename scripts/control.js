@@ -9,12 +9,12 @@ function initCharts(data) {
   heatMap = new HeatMap(d3.select('#heat'), data);
   treeMap = new TreeMap(d3.select('#tree'), data);
 
-  controlChange(data); //load graphs first time
+  // heatMap.draw(newData);
+  treeMap.draw(data);
+  d3.select('#show').attr('class', 'show'); //show button after graphs are drawn
 }
 
-function controlChange(newData) {
+function updateSelection(newData) {
   tsneGraph.draw(newData);
   parallelGraph.draw(newData);
-  // heatMap.draw(newData);
-  treeMap.draw(newData);
 }

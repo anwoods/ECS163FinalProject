@@ -3,9 +3,9 @@ let categoryColors = {};
 
 d3.csv("./data/ks-projects-201612.csv", function(error, data) {
   if (error) throw error;
-  filteredData = []
-  smallData = data.slice(0, 1000);
-  smallData.forEach(function(d, i) {
+  filteredData = [];
+  //smallData = data.slice(0, 1000);
+  data.forEach(function(d, i) {
     d.ID = +d.ID;
     d.goal = +d.goal;
     d.pledged = +d.pledged;
@@ -29,7 +29,7 @@ d3.csv("./data/ks-projects-201612.csv", function(error, data) {
     // addToDict(d.main_category, d.category, category);
   });
 
-  smallData = filteredData;
+  data = filteredData;
   //generate color scale obj
   let catList = Object.keys(category);
   let color = d3.scaleSequential()
@@ -50,8 +50,27 @@ d3.csv("./data/ks-projects-201612.csv", function(error, data) {
   });
 
   console.log(categoryColors);
-  initCharts(smallData);
+  initCharts(data);
+
+  let button = document.querySelector('#show')
+  button.addEventListener('click', () => {
+    button.innerHTML = 'Update Detail Graphs';
+    console.log('clicked show');
+    console.log(selectedCategories);
+    console.log(data);
+    newData = [];
+    data.forEach((d) => {
+      if (selectedCategories.main.includes(d.main_category) || selectedCategories.sub.includes(d.category)) {
+        //this is in our list we want to filter by
+        newData.push(d);
+      }
+    });
+    console.log(newData);
+    updateSelection(newData);
+  });
 });
+
+
 
 function addToDict(category, subcategory, dict) {
   if (dict[category] == undefined) {

@@ -23,6 +23,14 @@ svg {
 }
 
 .selected {
-  stroke: "black";
+  stroke: #000;
   stroke-width: 1px;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
 }

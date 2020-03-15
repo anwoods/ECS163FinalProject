@@ -4,11 +4,6 @@ function ParallelGraph(svg, data) {
     .attr('transform', 'translate(20, 20)');
   let names = ['goal', 'pledged', 'backers', 'campaignLength']
   let y = {}
-  for (let name of names) {
-    y[name] = d3.scaleLinear()
-      .domain(d3.extent(data, d => d[name]))
-      .range([box.height - 40, 0]);
-  }
 
   let x = d3.scalePoint()
     .range([0, box.width - 40])
@@ -23,6 +18,12 @@ function ParallelGraph(svg, data) {
 
   this.draw = (newData) => {
     this.svg.selectAll('.axis').remove();
+
+    for (let name of names) {
+      y[name] = d3.scaleLinear()
+        .domain(d3.extent(newData, d => d[name]))
+        .range([box.height - 40, 0]);
+    }
 
     let selection = this.svg.selectAll('path')
       .data(newData, d => {

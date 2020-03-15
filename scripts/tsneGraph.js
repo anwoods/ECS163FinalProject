@@ -91,7 +91,7 @@ function TsneGraph(svg, data) {
     opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
     opt.dim = 2; // dimensionality of the embedding (2 = default)
     var tsne = new tsnejs.tSNE(opt);
-    // console.log(tsneData);
+    console.log(tsneData);
     tsne.initDataRaw(tsneData);
 
     let circles = this.svg
