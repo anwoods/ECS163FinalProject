@@ -4,46 +4,26 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
 
-<style>
-  #treemapTooltip {
-    font: 10px sans-serif;
-    position: absolute;
-    border-radius: 10px;
-    padding: 10px;
-    overflow-x: visible;
-    overflow-y: visible;
-    background-color: black;
-    color: white;
-    text-align: center;
-    opacity: 0.8;
-  }
-</style>
+  </style>
+</head>
 
 <body>
   <svg id="heat"></svg>
-  <svg id="tree"></svg>
-  <div id="treemapTooltip" style="display:none"></div>
-  <button id="show" class="hide">Show Detail Graphs</button>
-  <div id="error" class="hide">Please select a category to display the detail graph</div>
-  <svg id="tsne"></svg>
-  <svg id="parallel"></svg>
+  <div id="heatTooltip" class="hide"></div>
+  <div>
+    <button id="reset">Reset</button>
+    <button id="deadline">Deadline Data</button>
+    <button id="launched">Launched Data</button>
+  </div>
 
 
 
   <script src='./scripts/d3.v4.min.js'></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src='https://raw.githack.com/karpathy/tsnejs/master/tsne.js'></script>
-  <script src="./scripts/d3-lasso.js"></script>
-
-  <script src='./scripts/tsneGraph.js'></script>
-  <script src='./scripts/parallelGraph.js'></script>
   <script src='./scripts/heatMap.js'></script>
-  <script src='./scripts/treeMap.js'></script>
   <script src='./scripts/control.js'></script>
   <script src='./scripts/data.js'></script>
-
 
 </body>
 

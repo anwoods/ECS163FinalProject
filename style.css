@@ -34,3 +34,7 @@ svg {
 .hide {
   display: none;
 }
+
+button {
+  display: inline;
+}
