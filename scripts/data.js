@@ -51,23 +51,6 @@ d3.csv("./data/ks-projects-201612.csv", function(error, data) {
 
   console.log(categoryColors);
   initCharts(data);
-
-  let button = document.querySelector('#show')
-  button.addEventListener('click', () => {
-    button.innerHTML = 'Update Detail Graphs';
-    console.log('clicked show');
-    console.log(selectedCategories);
-    console.log(data);
-    newData = [];
-    data.forEach((d) => {
-      if (selectedCategories.main.includes(d.main_category) || selectedCategories.sub.includes(d.category)) {
-        //this is in our list we want to filter by
-        newData.push(d);
-      }
-    });
-    console.log(newData);
-    updateSelection(newData);
-  });
 });
 
 
