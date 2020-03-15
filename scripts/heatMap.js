@@ -40,6 +40,7 @@ function HeatMap(svg, data) {
       realData = d2.deadlineArray;
     }
 
+    let numYears = realData[0].length;
     var min = d3.min(realData[0], function(d) {
       return d;
     });
@@ -50,21 +51,21 @@ function HeatMap(svg, data) {
 
     var years = [];
     var temp = [];
-    for (var i = 0; i < 9; i++) {
-      console.log(realData[0][i]);
+    for (var i = 0; i < realData[0].length; i++) {
+      // console.log(realData[0][i]);
       temp.push(realData[0][i]);
     }
 
 
     var sortedData = temp.sort();
     sortedData.forEach(function(d) {
-      console.log(d);
+      // console.log(d);
       var string = d.toString();
       years.push(string);
     });
 
-    console.log(years);
-    console.log(temp);
+    // console.log(years);
+    // console.log(temp);
     x.domain(months);
     y.domain(years);
 
@@ -73,8 +74,8 @@ function HeatMap(svg, data) {
     var minValue = 100000000000;
     var maxValue = -1;
 
-    for (var row = 1; row < 13; row++) {
-      for (var col = 0; col < 9; col++) {
+    for (var row = 1; row < realData.length; row++) {
+      for (var col = 0; col < realData[0].length; col++) {
         if (realData[row][col] < minValue) {
           minValue = realData[row][col];
         }
@@ -115,7 +116,7 @@ function HeatMap(svg, data) {
     function findYear(yVal) {
       var realY = yVal - yPosition;
       var form = d3.format(".6f");
-      for (var it = 0; it < 9; it++) {
+      for (var it = 0; it < realData[0].length; it++) {
         if (form(y(realData[0][it].toString())) == form(realY)) {
           return realData[0][it];
         }
@@ -133,7 +134,7 @@ function HeatMap(svg, data) {
     }
 
     function findYearIndex(yearVal) {
-      for (var yearIt = 0; yearIt < 9; yearIt++) {
+      for (var yearIt = 0; yearIt < years.length; yearIt++) {
         //console.log("years at yearIT = " , +(years[yearIt]), " vs yearVal toString = ", yearVal);
         if (+(years[yearIt]) == yearVal) {
           //console.log("found year ", yearIt);
@@ -177,7 +178,7 @@ function HeatMap(svg, data) {
 
     // console.log(realData);
     var temp2 = [];
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < realData[0]; i++) {
       temp2.push(realData[0][i]);
     }
     var dataFlat = [];
@@ -205,16 +206,16 @@ function HeatMap(svg, data) {
       .append("rect")
       .attr("x", function(d, i) {
         //find year and month
-        var yearIndex = i % 9;
-        var monthIndex = Math.floor(i / 9);
+        var yearIndex = i % numYears;
+        var monthIndex = Math.floor(i / numYears);
         // console.log(" d = ", d, " i = ", i, " yearIndex = ", yearIndex, " monthIndex = ", monthIndex);
         opacityFlat.push(1);
         return x(monthIndex + 1) + xPosition;
       })
       .attr("y", function(d, i) {
         //find year and month
-        var yearIndex = i % 9;
-        var monthIndex = Math.floor(i / 9);
+        var yearIndex = i % numYears;
+        var monthIndex = Math.floor(i / numYears);
         var numberYear = dataYears[yearIndex];
         // console.log(" d = ", d, " i = ", i, " yearIndex = ", yearIndex, " numberYear = ", numberYear);
         return y(numberYear.toString()) + yPosition;
@@ -232,6 +233,24 @@ function HeatMap(svg, data) {
       })
       .attr("stroke-width", 1)
       .attr("stroke", "black")
+      .on('mouseover', (d) => {
+        var tooltip = d3.select('#heatTooltip');
+        tooltip.attr('class', 'show');
+        tooltip.style('left', d3.event.pageX + "px");
+        tooltip.style('top', d3.event.pageY + "px");
+        // console.log('tooltip');
+        // console.log(d);
+        tooltip.html(d + ' projects');
+      })
+      .on('mousemove', function(datum, index, nodes) {
+        var tooltip = d3.select('#heatTooltip');
+        tooltip.style('left', d3.event.pageX + "px");
+        tooltip.style('top', d3.event.pageY + "px");
+      })
+      .on('mouseleave', (datum, index, nodes) => {
+        var tooltip = d3.select('#heatTooltip');
+        tooltip.attr('class', 'hide');
+      })
       .on("click", function(d, i) {
         var prevX = d3.select(this).attr("x");
         var prevY = d3.select(this).attr("y");
@@ -328,7 +347,7 @@ function HeatMap(svg, data) {
       // console.log(dataYears);
       //0 is 1970
       var count = 0;
-      for (var it = 0; it < 9; it++) {
+      for (var it = 0; it < dataYears.length; it++) {
         var min = y(dataYears[it]);
         var max = y(dataYears[it]) + bandwidth;
         if (form(yVal) <= max && form(yVal) >= min) {
@@ -351,8 +370,8 @@ function HeatMap(svg, data) {
         rectangles.attr("opacity", function(d, i) {
           //make a long array for opacity
           //find if in the month row
-          var yearIndex = i % 9;
-          var monthIndex = Math.floor(i / 9);
+          var yearIndex = i % numYears;
+          var monthIndex = Math.floor(i / numYears);
           //check if selected array empty make all 0.4 except the row....
           if (selectedTimes.length == 0) {
             if (monthIndex == getMonth - 1) {
@@ -376,7 +395,7 @@ function HeatMap(svg, data) {
         });
 
         //Add to selected array
-        for (var y = 0; y < 9; y++) {
+        for (var y = 0; y < dataYears.length; y++) {
           var getYear = dataYears[y];
           var checkSelectedTimesArray = inSelectedTimesArray(getMonth, getYear);
           if (checkSelectedTimesArray == false) {
@@ -401,8 +420,8 @@ function HeatMap(svg, data) {
         var rectangles = svg.selectAll("rect");
 
         rectangles.attr("opacity", function(d, i) {
-          var yearIndex = i % 9;
-          var monthIndex = Math.floor(i / 9);
+          var yearIndex = i % numYears;
+          var monthIndex = Math.floor(i / numYears);
 
           if (selectedTimes.length == 0) {
             if (getYear == yearIndex) {
