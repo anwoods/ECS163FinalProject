@@ -34,3 +34,20 @@ svg {
 .hide {
   display: none;
 }
+
+button {
+  display: inline;
+}
+
+.tooltip {
+  font: 10px sans-serif;
+  position: absolute;
+  border-radius: 10px;
+  padding: 10px;
+  overflow-x: visible;
+  overflow-y: visible;
+  background-color: black;
+  color: white;
+  text-align: center;
+  opacity: 0.8;
+}

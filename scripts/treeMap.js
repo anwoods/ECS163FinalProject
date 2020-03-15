@@ -120,9 +120,10 @@ function TreeMap(svg, data) {
 
         var tooltip = d3.select('#treemapTooltip');
 
-        var rect = nodes[index].getBoundingClientRect();
+        // var rect = nodes[index].getBoundingClientRect();
 
-        tooltip.style('display', 'block');
+        tooltip.classed('show', true);
+        tooltip.classed('hide', false);
         tooltip.style('left', d3.event.pageX + "px");
         tooltip.style('top', d3.event.pageY + "px");
         // tooltip.style('left', rect.left+"px");
@@ -140,7 +141,7 @@ function TreeMap(svg, data) {
       })
       .on('mousemove', function(datum, index, nodes) {
         var tooltip = d3.select('#treemapTooltip');
-        var rect = nodes[index].getBoundingClientRect();
+        // var rect = nodes[index].getBoundingClientRect();
         tooltip.style('left', d3.event.pageX + "px");
         tooltip.style('top', d3.event.pageY + "px");
         // tooltip.style('left', rect.left+"px");
@@ -151,7 +152,8 @@ function TreeMap(svg, data) {
           .attr("fill-opacity", "1.0");
 
         var tooltip = d3.select('#treemapTooltip');
-        tooltip.style('display', 'none');
+        tooltip.classed('show', false);
+        tooltip.classed('hide', true);
       })
       .on('click', (datum, index, nodes) => {
         console.log('treemap clicked');

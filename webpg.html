@@ -6,25 +6,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<style>
-  #treemapTooltip {
-    font: 10px sans-serif;
-    position: absolute;
-    border-radius: 10px;
-    padding: 10px;
-    overflow-x: visible;
-    overflow-y: visible;
-    background-color: black;
-    color: white;
-    text-align: center;
-    opacity: 0.8;
-  }
-</style>
-
 <body>
   <svg id="heat"></svg>
+  <div id="heatTooltip" class="hide tooltip"></div>
+  <div class="hide" id="buttons">
+    <button id="reset">Reset</button>
+    <button id="deadline">Deadline Data</button>
+    <button id="launched">Launched Data</button>
+  </div>
   <svg id="tree"></svg>
-  <div id="treemapTooltip" style="display:none"></div>
+  <div id="treemapTooltip" class="hide tooltip"></div>
   <button id="show" class="hide">Show Detail Graphs</button>
   <div id="error" class="hide">Please select a category to display the detail graph</div>
   <svg id="tsne"></svg>
