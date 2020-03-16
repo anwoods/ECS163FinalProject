@@ -29,11 +29,11 @@ function HeatMap(svg, data) {
 
   var parseTime = d3.timeFormat("%m/%d/%Y");
 
-  document.querySelector('#reset')
+  document.querySelector('#resetH')
     .addEventListener('click', reset);
 
   function reset() {
-    var rectangles = d3.select("#heat").selectAll("rect");
+    var rectangles = svg.select("#heat").selectAll("rect");
     rectangles.attr("opacity", 1);
     for (var it = 0; it < opacityFlat.length; it++) {
       opacityFlat[it] = 1;

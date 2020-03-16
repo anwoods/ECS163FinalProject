@@ -12,10 +12,7 @@ function TreeMap(svg, data) {
     height: 30
   };
 
-  var selectedCategories = {
-    main: [],
-    sub: []
-  };
+  var selectedCategories = [];
 
   var boundingBox = svg.node().getBoundingClientRect();
 
@@ -31,6 +28,29 @@ function TreeMap(svg, data) {
     }).join("-");
   }
 
+  function arraysMatch(arr1, arr2) {
+
+    // Check if the arrays are the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Check if all items exist and are in the same order
+    for (var i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
+    }
+
+    // Otherwise, return true
+    return true;
+
+  };
+
+  document.querySelector('#resetT')
+    .addEventListener('click', reset);
+
+  function reset() {
+    selectedCategories = [];
+    svg.selectAll('rect').classed('selected', false);
+  }
+
   this.draw = (newData) => {
     console.log('drawing treeMap');
     // console.log(newData);
@@ -40,7 +60,7 @@ function TreeMap(svg, data) {
     button.removeEventListener('click', drawDetails); //remove old version;
     drawDetails = function() {
       button.innerHTML = 'Update Detail Graphs';
-      if (selectedCategories.main.length == 0) {
+      if (selectedCategories.length == 0) {
         d3.select('#error').attr('class', 'show');
       } else {
         d3.select('#error').attr('class', 'hide');
@@ -49,11 +69,17 @@ function TreeMap(svg, data) {
       console.log(filteredData);
       console.log(selectedCategories);
       newData.forEach((d) => {
-        if (selectedCategories.main.includes(d.main_category) && selectedCategories.sub.includes(d.category)) {
-          console.log(d.main_category, d.category);
-          //this is in our list we want to filter by
+        if (selectedCategories.some((c) => {
+            return c[0] == d.state && c[1] == d.main_category && c[2] == d.category;
+          })) {
           filteredData.push(d);
         }
+
+        // if (selectedCategories.main.includes(d.main_category) && selectedCategories.sub.includes(d.category)) {
+        //   console.log(d.main_category, d.category);
+        //   //this is in our list we want to filter by
+        //   filteredData.push(d);
+        // }
       });
       console.log(filteredData);
       updateSelection(filteredData);
@@ -170,6 +196,7 @@ function TreeMap(svg, data) {
         var currentCategory = datum.data.key;
         var currentParentCategory = datum.parent.data.key;
         var currentNode = d3.select(nodes[index]);
+        let filterAr;
         // console.log(currentCategory);
 
         //change class of selected
@@ -180,55 +207,70 @@ function TreeMap(svg, data) {
           //we have a main category
           // console.log('main selected');
           if (currentNode.classed("selected")) {
-            if (!selectedCategories.main.includes(currentCategory)) {
-              selectedCategories.main.push(currentCategory);
-            }
+            // if (!selectedCategories.main.includes(currentCategory)) {
+            //   selectedCategories.main.push(currentCategory);
+            // }
             //remove selected from children
             datum.children.forEach((d) => {
               let childNode = d3.select('#' + getIdString(d)); //select by id
               if (childNode.classed("selected")) {
                 childNode.classed("selected", false);
               } else {
-                selectedCategories.sub.push(d.data.key);
+                filterAr = d.ancestors().reverse().map(d =>
+                  d.data.key).filter((d) => d != undefined);
+                selectedCategories.push(filterAr);
               }
             });
 
-          } else if (!currentNode.classed("selected") && selectedCategories.main.includes(currentCategory)) {
-            selectedCategories.main = selectedCategories.main.filter(category =>
-              !(category == currentCategory));
+          } else if (!currentNode.classed("selected")) {
+            // selectedCategories.main = selectedCategories.main.filter(category =>
+            //   !(category == currentCategory));
 
             datum.children.forEach((d) => {
-              selectedCategories.sub = selectedCategories.sub.filter(category =>
-                !(category == d.data.key));
+              let removedAr = d.ancestors().reverse().map(d =>
+                d.data.key).filter((d) => d != undefined);
+              selectedCategories = selectedCategories.filter(ar =>
+                !(arraysMatch(ar, removedAr)));
             });
 
           }
         } else {
           //we have a sub category
           // console.log('sub selected');
-          if (currentNode.classed("selected") && !selectedCategories.sub.includes(currentCategory)) {
-            selectedCategories.sub.push(currentCategory);
+          filterAr = datum.ancestors().reverse().map(d =>
+            d.data.key).filter((d) => d != undefined);
+          if (currentNode.classed("selected")) {
+            // selectedCategories.sub.push(currentCategory);
             //check if parent is selected
             parentNode = d3.select('#' + getIdString(datum.parent));
             if (parentNode.classed('selected')) {
               parentNode.classed('selected', false);
-            } else if (!selectedCategories.main.includes(currentParentCategory)) {
-              selectedCategories.main.push(currentParentCategory);
+              // console.log(parentNode.data());
+              parentNode.data()[0].children.forEach((d) => {
+                let removedAr = d.ancestors().reverse().map(d =>
+                  d.data.key).filter((d) => d != undefined);
+                selectedCategories = selectedCategories.filter(ar =>
+                  !(arraysMatch(ar, removedAr)));
+              }); //remove all children
             }
-          } else if (!currentNode.classed("selected") && selectedCategories.sub.includes(currentCategory)) {
-            selectedCategories.sub = selectedCategories.sub.filter(category =>
-              !(category == currentCategory));
-            //remove main if no other subcategories are in the list
-            if (datum.parent.children.every((sub) => {
-                // console.log(sub);
-                if (selectedCategories.sub.includes(sub.data.key)) {
-                  return false;
-                } else {
-                  return true;
-                }
-              })) {
-              selectedCategories.main = selectedCategories.main.filter(category => !(category == currentParentCategory));
-            }
+
+            selectedCategories.push(filterAr); //add selected
+          } else if (!currentNode.classed("selected")) {
+            selectedCategories = selectedCategories.filter(ar =>
+              !(arraysMatch(ar, filterAr)));
+            // selectedCategories.sub = selectedCategories.sub.filter(category =>
+            //   !(category == currentCategory));
+            // //remove main if no other subcategories are in the list
+            // if (datum.parent.children.every((sub) => {
+            //     // console.log(sub);
+            //     if (selectedCategories.sub.includes(sub.data.key)) {
+            //       return false;
+            //     } else {
+            //       return true;
+            //     }
+            //   })) {
+            //   selectedCategories.main = selectedCategories.main.filter(category => !(category == currentParentCategory));
+            // }
           }
         }
         //set stroke

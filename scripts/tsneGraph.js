@@ -4,7 +4,8 @@ function TsneGraph(svg, data) {
   var height = box.height - 40;
   let lasso;
 
-  this.svg = svg
+  this.svg = svg.append("g")
+    .attr("transform", "translate(20,20)");
 
   //// Lasso effect ////
 
@@ -50,10 +51,6 @@ function TsneGraph(svg, data) {
     }
 
   }
-
-
-  this.svg.append("g")
-    .attr("transform", "translate(20,20)");
 
   goalScale = d3.scaleLinear()
     .range([0, 1])

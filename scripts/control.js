@@ -13,8 +13,8 @@ function initCharts(data) {
 
   heatMap.draw(data, "launched");
   treeMap.draw(data);
-  d3.select('#show').attr('class', 'show'); //show button after graphs are drawn
-  d3.select('#buttons').attr('class', 'show');
+  d3.select('#buttonsT').attr('class', 'show'); //show button after graphs are drawn
+  d3.select('#buttonsH').attr('class', 'show');
 }
 
 function updateTreeMap(newData) {
