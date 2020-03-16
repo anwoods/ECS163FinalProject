@@ -38,8 +38,8 @@ function ParallelGraph(svg, data) {
         var tooltip = d3.select('#parallelTooltip');
         tooltip.classed('show', true);
         tooltip.classed('hide', false);
-        //tooltip.style('left', d3.event.pageX + "px");
-        //tooltip.style('top', d3.event.pageY + "px");
+        tooltip.style('left', d3.event.pageX + "px");
+        tooltip.style('top', d3.event.pageY + "px");
         tooltip.html('<b>' +
           d.name + '</b><br>' +
           'status: ' + d.state + '<br>' +
