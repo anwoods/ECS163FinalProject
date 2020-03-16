@@ -33,6 +33,7 @@ function ParallelGraph(svg, data) {
     let entering = selection.enter()
       .append('path')
       .attr('id', d => d.ID)
+      .attr('class', 'dataLine')
       .on('mouseover', (d) => {
         var tooltip = d3.select('#parallelTooltip');
         tooltip.classed('show', true);
@@ -92,7 +93,7 @@ function ParallelGraph(svg, data) {
   }
 
   this.selection = (selectedData) => {
-    this.svg.selectAll('path')
+    this.svg.selectAll('.dataLine')
       .attr('display', 'none'); //hide everything
     selectedData.forEach((d) => {
       this.svg.select('[id="' + d.ID + '"]') //show selected elements

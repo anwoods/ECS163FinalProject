@@ -384,6 +384,13 @@ function HeatMap(svg, data) {
         var prevX = d3.mouse(this)[0];
         var getMonth = getMonthAxis(prevX);
         var rectangles = svg.selectAll("rect");
+        var found = 0;
+        for(var it = 0; it < selectedTimes.length; it++){
+          if(selectedTimes[it][0] == getMonth){
+            found++;
+          }
+        }
+
 
         //Change opacity
         rectangles.attr("opacity", function(d, i) {
@@ -391,8 +398,18 @@ function HeatMap(svg, data) {
           //find if in the month row
           var yearIndex = i % numYears;
           var monthIndex = Math.floor(i / numYears);
-          //check if selected array empty make all 0.4 except the row....
-          if (selectedTimes.length == 0) {
+          //check if all months are selected if so then delete them
+          if(found == 8){
+            if(monthIndex == getMonth - 1){
+              opacityFlat[i] = 0.4
+              return 0.4;
+            }else if(opacityFlat[i] == 1){
+              opacityFlat[i] = 1;
+              return 1;
+            }else{
+              return 0.4;
+            }
+          }else if (selectedTimes.length == 0) {
             if (monthIndex == getMonth - 1) {
               opacityFlat[i] = 1;
               return 1;
@@ -413,19 +430,35 @@ function HeatMap(svg, data) {
 
         });
 
-        //Add to selected array
-        for (var y = 0; y < dataYears.length; y++) {
-          var getYear = dataYears[y];
-          var checkSelectedTimesArray = inSelectedTimesArray(getMonth, getYear);
-          if (checkSelectedTimesArray == false) {
-            var time = [getMonth, getYear];
-            selectedTimes.push(time);
-            // console.log(selectedTimes);
+        if(found == 8){
+          selectedTimes = selectedTimes.filter(function(d2){
+            var result = true;
+            if(d2[0] == getMonth){
+              result = false;
+            }
+            return result;
+          });
+        }else {
+           //Add to selected array
+          for (var y = 0; y < dataYears.length; y++) {
+            var getYear = dataYears[y];
+            var checkSelectedTimesArray = inSelectedTimesArray(getMonth, getYear);
+            if (checkSelectedTimesArray == false) {
+              var time = [getMonth, getYear];
+              selectedTimes.push(time);
+              // console.log(selectedTimes);
+            }
           }
         }
 
-        //Update other function!
-        filterAndUpdate(d2);
+        if(selectedTimes.length == 0){
+          reset();
+        }else{
+          //Update other function!
+          filterAndUpdate(d2);
+        }
+  
+
       });
 
 
@@ -437,12 +470,32 @@ function HeatMap(svg, data) {
         var prevY = d3.mouse(this)[1];
         var getYear = getYearAxis(prevY);
         var rectangles = svg.selectAll("rect");
+        var found = 0;
+        for(var it = 0; it < selectedTimes.length; it++){
+          console.log("get Year =", dataYears[getYear], "selectedTimes ", selectedTimes[it][1]);
+          if(selectedTimes[it][1] == dataYears[getYear]){
+            found++;
+          }
+        }
+
+        console.log("found = ", found);
 
         rectangles.attr("opacity", function(d, i) {
           var yearIndex = i % numYears;
           var monthIndex = Math.floor(i / numYears);
 
-          if (selectedTimes.length == 0) {
+
+          if(found == 12){
+            if(getYear == yearIndex){
+              opacityFlat[i] = 0.4
+              return 0.4;
+            }else if(opacityFlat[i] == 1){
+              opacityFlat[i] = 1;
+              return 1;
+            }else{
+              return 0.4;
+            }
+          }else if (selectedTimes.length == 0) {
             if (getYear == yearIndex) {
               opacityFlat[i] = 1;
               return 1;
@@ -461,15 +514,31 @@ function HeatMap(svg, data) {
         });
 
         //Add to selected array
-        for (var x = 1; x < 13; x++) {
-          var checkSelectedTimesArray = inSelectedTimesArray(x, dataYears[getYear]);
-          if (checkSelectedTimesArray == false) {
-            var time = [x, dataYears[getYear]];
-            selectedTimes.push(time);
+        if(found == 12){
+          selectedTimes = selectedTimes.filter(function(d2){
+            var result = true;
+            if(d2[1] == dataYears[getYear]){
+              result = false;
+            }
+            return result;
+          });
+        }else{
+          for (var x = 1; x < 13; x++) {
+            var checkSelectedTimesArray = inSelectedTimesArray(x, dataYears[getYear]);
+            if (checkSelectedTimesArray == false) {
+              var time = [x, dataYears[getYear]];
+              selectedTimes.push(time);
+            }
           }
         }
+        console.log(selectedTimes);
 
-        filterAndUpdate(d2);
+        if(selectedTimes.length == 0){
+          reset();
+        }else{
+          //Update other function!
+          filterAndUpdate(d2);
+        }
         //Update other function!
       });
 
