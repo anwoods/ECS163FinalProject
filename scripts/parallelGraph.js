@@ -32,7 +32,32 @@ function ParallelGraph(svg, data) {
 
     let entering = selection.enter()
       .append('path')
-      .attr('id', d => d.ID);
+      .attr('id', d => d.ID)
+      .on('mouseover', (d) => {
+        var tooltip = d3.select('#parallelTooltip');
+        tooltip.classed('show', true);
+        tooltip.classed('hide', false);
+        //tooltip.style('left', d3.event.pageX + "px");
+        //tooltip.style('top', d3.event.pageY + "px");
+        tooltip.html('<b>' +
+          d.name + '</b><br>' +
+          'status: ' + d.state + '<br>' +
+          'category: ' + d.main_category + ', ' + d.category + '<br>' +
+          'goal: ' + d.goal + '<br>' +
+          'pledged: ' + d.pledged + '<br>' +
+          'backers: ' + d.backers + '<br>' +
+          'campaign length (days): ' + Math.floor(d.campaignLength));
+      })
+      // .on('mousemove', function(datum, index, nodes) {
+      //   var tooltip = d3.select('#parallelTooltip');
+      //   tooltip.style('left', d3.event.pageX + "px");
+      //   tooltip.style('top', d3.event.pageY + "px");
+      // })
+      .on('mouseleave', (datum, index, nodes) => {
+        var tooltip = d3.select('#parallelTooltip');
+        tooltip.classed('show', false);
+        tooltip.classed('hide', true);
+      });
 
     function update(updateSelect) {
       updateSelect

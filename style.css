@@ -51,3 +51,8 @@ button {
   text-align: center;
   opacity: 0.8;
 }
+
+#parallelTooltip {
+  left: 550px;
+  top: 1400px;
+}

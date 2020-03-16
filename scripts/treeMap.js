@@ -1,5 +1,6 @@
 function TreeMap(svg, data) {
-
+  let drawDetails;
+  let button = document.querySelector('#show');
   var margins = {
     top: 10,
     bottom: 10,
@@ -32,27 +33,32 @@ function TreeMap(svg, data) {
 
   this.draw = (newData) => {
     console.log('drawing treeMap');
+    // console.log(newData);
 
     svg.selectAll("g").remove();
 
-    let button = document.querySelector('#show')
-    button.addEventListener('click', () => {
+    button.removeEventListener('click', drawDetails); //remove old version;
+    drawDetails = function() {
       button.innerHTML = 'Update Detail Graphs';
       if (selectedCategories.main.length == 0) {
         d3.select('#error').attr('class', 'show');
       } else {
         d3.select('#error').attr('class', 'hide');
       }
-      filteredData = [];
+      let filteredData = [];
+      console.log(filteredData);
+      console.log(selectedCategories);
       newData.forEach((d) => {
         if (selectedCategories.main.includes(d.main_category) && selectedCategories.sub.includes(d.category)) {
+          console.log(d.main_category, d.category);
           //this is in our list we want to filter by
           filteredData.push(d);
         }
       });
-      console.log(newData);
+      console.log(filteredData);
       updateSelection(filteredData);
-    });
+    };
+    button.addEventListener('click', drawDetails);
 
     var nest = d3.nest()
       .key((d) => d.state)

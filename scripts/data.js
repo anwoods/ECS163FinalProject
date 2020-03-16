@@ -73,7 +73,7 @@ d3.csv("./data/ks-projects-2016120.csv", function(error, data) {
 
 
   data = filteredData;
-  console.log(domainLaunched);
+  // console.log(domainLaunched);
   data.launchedArray = domainLaunched;
   data.deadlineArray = domainDeadline;
   //generate color scale obj
@@ -95,7 +95,7 @@ d3.csv("./data/ks-projects-2016120.csv", function(error, data) {
       .range(values);
   });
 
-  console.log(categoryColors);
+  // console.log(categoryColors);
   initCharts(data);
 
   document.querySelector('#deadline')

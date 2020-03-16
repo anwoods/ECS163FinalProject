@@ -188,6 +188,7 @@ function HeatMap(svg, data) {
       // console.log("filteredData : ", filteredData);
 
       //update scatter and treemap
+      console.log(filteredData);
       updateTreeMap(filteredData);
     }
 
@@ -282,7 +283,7 @@ function HeatMap(svg, data) {
           // console.log("i = ", i);
           previouslySelected = d3.select(this);
           // console.log(d3.select(this));
-          var allRects = d3.selectAll("rect");
+          var allRects = svg.selectAll("rect");
           allRects.attr("opacity", 0.4);
           for (var it = 0; it < opacityFlat.length; it++) {
             if (it == i) {
