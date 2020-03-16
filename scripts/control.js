@@ -17,6 +17,11 @@ function initCharts(data) {
   d3.select('#buttons').attr('class', 'show');
 }
 
+function updateTreeMap(newData) {
+  console.log(newData);
+  treeMap.draw(newData);
+}
+
 function updateSelection(newData) {
   tsneGraph.draw(newData);
   parallelGraph.draw(newData);

@@ -187,6 +187,8 @@ function HeatMap(svg, data) {
       // console.log("filteredData : ", filteredData);
 
       //update scatter and treemap
+      console.log("updating treemap");
+      updateTreeMap(filteredData);
     }
 
 
