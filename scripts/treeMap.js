@@ -12,8 +12,6 @@ function TreeMap(svg, data) {
     height: 30
   };
 
-  var selectedCategories = [];
-
   var boundingBox = svg.node().getBoundingClientRect();
 
   var height = boundingBox.height - header.height;
@@ -52,9 +50,10 @@ function TreeMap(svg, data) {
   }
 
   this.draw = (newData) => {
+    var selectedCategories = [];
     console.log('drawing treeMap');
+    console.log(selectedCategories);
     // console.log(newData);
-
     svg.selectAll("g").remove();
 
     button.removeEventListener('click', drawDetails); //remove old version;

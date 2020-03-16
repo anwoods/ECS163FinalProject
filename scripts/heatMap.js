@@ -33,7 +33,7 @@ function HeatMap(svg, data) {
     .addEventListener('click', reset);
 
   function reset() {
-    var rectangles = svg.select("#heat").selectAll("rect");
+    var rectangles = svg.selectAll("rect");
     rectangles.attr("opacity", 1);
     for (var it = 0; it < opacityFlat.length; it++) {
       opacityFlat[it] = 1;
