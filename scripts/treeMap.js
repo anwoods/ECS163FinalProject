@@ -33,6 +33,8 @@ function TreeMap(svg, data) {
   this.draw = (newData) => {
     console.log('drawing treeMap');
 
+    svg.selectAll("g").remove();
+
     let button = document.querySelector('#show')
     button.addEventListener('click', () => {
       button.innerHTML = 'Update Detail Graphs';

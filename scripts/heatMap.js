@@ -42,6 +42,7 @@ function HeatMap(svg, data) {
       selectedTimes.pop();
     }
     //UPdate other visualizations
+    updateTreeMap(data);
   }
 
   this.draw = (d2, deadlineOrLaunched) => {
@@ -187,6 +188,7 @@ function HeatMap(svg, data) {
       // console.log("filteredData : ", filteredData);
 
       //update scatter and treemap
+      updateTreeMap(filteredData);
     }
 
 
