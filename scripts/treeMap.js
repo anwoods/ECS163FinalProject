@@ -1,4 +1,5 @@
 function TreeMap(svg, data) {
+  let selectedCategories = [];
   let drawDetails;
   let button = document.querySelector('#show');
   var margins = {
@@ -50,7 +51,7 @@ function TreeMap(svg, data) {
   }
 
   this.draw = (newData) => {
-    var selectedCategories = [];
+    selectedCategories = [];
     console.log('drawing treeMap');
     console.log(selectedCategories);
     // console.log(newData);

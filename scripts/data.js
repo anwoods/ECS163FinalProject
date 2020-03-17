@@ -85,7 +85,7 @@ d3.csv("./data/ks-projects-2016120.csv", function(error, data) {
   catList.forEach((type, i) => {
     valuescale = d3.scaleSequential()
       .domain([0, category[type].length])
-      .interpolator(d3.interpolateRgb("white", color(i)));
+      .interpolator(d3.interpolateRgb(color(i), "white"));
     values = [];
     for (let j = 0; j < category[type].length; j++) {
       values[j] = valuescale(j + 1);
