@@ -100,6 +100,7 @@ function TsneGraph(svg, data) {
       .append('circle')
       .attr('id', (d) => d.ID)
       .attr('r', 3)
+      .attr("stroke", "gray")
       .attr('fill', d => {
         return categoryColors[d.main_category](d.category)
       });
